@@ -49,24 +49,24 @@ async function run() {
     const userDB = client.db("userDB");
     const userCollection = userDB.collection("userCollection");
 
-    app.post('/balls', verifyToken, async (req, res) => {
+    app.post('/courses', verifyToken, async (req, res) => {
         const balls=  req.body;
         const result = await ballcollection.insertOne(balls);
         res.send(result);
   });
 
-  app.get('/balls', async (req, res) => {
+  app.get('/courses', async (req, res) => {
     const balls=  ballcollection.find();
     const result = await balls.toArray();
     res.send(result);
   });
 
-  app.get('/balls/:id', async (req, res) => {
+  app.get('/courses/:id', async (req, res) => {
     const id= req.params.id
      const ballData = await ballcollection.findOne({ _id: new ObjectId(id)});
      res.send(ballData);
   });
-  app.patch('/balls/:id',verifyToken, async (req, res) => {
+  app.patch('/courses/:id',verifyToken, async (req, res) => {
     const id= req.params.id
     const updatedData= req.body;
      const result = await ballcollection.updateOne(
@@ -75,7 +75,8 @@ async function run() {
     );
      res.send( result);
   });
-  app.delete('/balls/:id', verifyToken, async (req, res) => {
+
+  app.delete('/courses/:id', verifyToken, async (req, res) => {
     const id= req.params.id
     // const updatedData= req.body;
      const result = await ballcollection.deleteOne(
@@ -85,10 +86,12 @@ async function run() {
   });
 
   //users
-  app.post("/user",verifyToken, async (req, res) => {
+  app.post("/user", async (req, res) => {
     const user = req.body;
 
     const token = createToken(user);
+    //console.log(token);
+
     const isUserExist = await userCollection.findOne({ email: user?.email });
     if (isUserExist?._id) {
       return res.send({
@@ -138,9 +141,9 @@ run().catch(console.log);
 
 
 
-// app.get('/users', (req, res) => {
-//   res.send('Hello users!')
-// })
+app.get('/', (req, res) => {
+  res.send('Hello users!')
+})
 
  app.listen(port, () => {
    console.log(`Example app listening on port ${port}`)

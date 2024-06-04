@@ -1,9 +1,10 @@
+require("dotenv").config();
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const jwt = require("jsonwebtoken");
-const port = 5000;
+const port = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
@@ -28,8 +29,7 @@ function verifyToken(req, res, next) {
   req.user = verify.email;
   next();
 }
-
-const uri = "mongodb+srv://arafatanjan:W9jFFKWsQ0yGc2Dj@cluster0.elphaib.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = process.env.DATABASE_URL;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -55,13 +55,13 @@ async function run() {
         res.send(result);
   });
 
-  app.get('/balls', verifyToken, async (req, res) => {
+  app.get('/balls', async (req, res) => {
     const balls=  ballcollection.find();
     const result = await balls.toArray();
     res.send(result);
   });
 
-  app.get('/balls/:id',verifyToken, async (req, res) => {
+  app.get('/balls/:id', async (req, res) => {
     const id= req.params.id
      const ballData = await ballcollection.findOne({ _id: new ObjectId(id)});
      res.send(ballData);

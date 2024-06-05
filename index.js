@@ -66,6 +66,7 @@ async function run() {
      const ballData = await ballcollection.findOne({ _id: new ObjectId(id)});
      res.send(ballData);
   });
+  
   app.patch('/courses/:id',verifyToken, async (req, res) => {
     const id= req.params.id
     const updatedData= req.body;
@@ -104,7 +105,11 @@ async function run() {
     return res.send({ token });
   });
 
-  
+  app.get('/users', async (req, res) => {
+    const users=  userCollection.find();
+    const result = await users.toArray();
+    res.send(result);
+  });
 
   app.get("/user/get/:id", async (req, res) => {
     const id = req.params.id;
